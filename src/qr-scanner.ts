@@ -1,5 +1,3 @@
-import { initDecoder } from "../node_modules/jsqr-es6/dist/decoder/reedsolomon/index";
-
 class QrScanner {
     static readonly DEFAULT_CANVAS_SIZE = 400;
     static readonly NO_QR_CODE_FOUND = 'No QR code found';
@@ -626,8 +624,6 @@ class QrScanner {
             console.warn('Specifying a worker path is not required and not supported anymore.');
         }
 
-        await initDecoder();
-        
         // @ts-ignore no types defined for import
         const createWorker = () => (import('./qr-scanner-worker.min.js') as Promise<{ createWorker: () => Worker }>)
             .then((module) => module.createWorker());
