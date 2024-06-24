@@ -1,4 +1,4 @@
-import { initDecoder } from "jsqr-es6/dist/decoder/reedsolomon";
+import { initDecoder } from "../node_modules/jsqr-es6/dist/decoder/reedsolomon/index";
 
 class QrScanner {
     static readonly DEFAULT_CANVAS_SIZE = 400;
