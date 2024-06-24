@@ -41,7 +41,6 @@ export default () => [
         plugins: [
             typescript(),
             sourcemaps(),
-            wasm({...emscripten, targetEnv: "auto", fileName: "[name][extname]"}),
             // closureCompiler({
             //     compilation_level: 'ADVANCED',
             //     warning_level: 'QUIET',
