@@ -1,7 +1,7 @@
 class QrScanner {
     static readonly DEFAULT_CANVAS_SIZE = 400;
     static readonly NO_QR_CODE_FOUND = 'No QR code found';
-    private static _disableBarcodeDetector = false;
+    private static _disableBarcodeDetector = true;
     private static _workerMessageId = 0;
 
     /** @deprecated */
