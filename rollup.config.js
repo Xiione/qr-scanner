@@ -3,7 +3,6 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 // ts config is a combination of tsconfig.json and overrides here. Type declarations file is generated separately via
 // tsc (see build script in package.json), because rollup can not emit multiple files if using output.file option.
 import typescript from '@rollup/plugin-typescript';
-import wasm, { emscripten } from '@rollup/plugin-wasm';
 
 // note: i removed this because it doesn't play nice with wasm, plus we want to
 // use jsQR always
