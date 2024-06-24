@@ -19,7 +19,7 @@ declare class QrScanner {
     private _lastScanTimestamp;
     private _scanRegion;
     private _codeOutlineHighlightRemovalTimeout?;
-    private _qrEnginePromise;
+    private _qrEngine;
     private _active;
     private _paused;
     private _flashOn;
@@ -53,7 +53,7 @@ declare class QrScanner {
     setCamera(facingModeOrDeviceId: QrScanner.FacingMode | QrScanner.DeviceId): Promise<void>;
     static scanImage(imageOrFileOrBlobOrUrl: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | ImageBitmap | SVGImageElement | File | Blob | URL | String, options: {
         scanRegion?: QrScanner.ScanRegion | null;
-        qrEngine?: Worker | BarcodeDetector | Promise<Worker | BarcodeDetector> | null;
+        qrEngine?: Worker | null;
         canvas?: HTMLCanvasElement | null;
         disallowCanvasResizing?: boolean;
         alsoTryWithoutScanRegion?: boolean;
@@ -64,9 +64,9 @@ declare class QrScanner {
     static scanImage(imageOrFileOrBlobOrUrl: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | OffscreenCanvas | ImageBitmap | SVGImageElement | File | Blob | URL | String, scanRegion?: QrScanner.ScanRegion | null, qrEngine?: Worker | BarcodeDetector | Promise<Worker | BarcodeDetector> | null, canvas?: HTMLCanvasElement | null, disallowCanvasResizing?: boolean, alsoTryWithoutScanRegion?: boolean): Promise<string>;
     setGrayscaleWeights(red: number, green: number, blue: number, useIntegerApproximation?: boolean): void;
     setInversionMode(inversionMode: QrScanner.InversionMode): void;
-    static createQrEngine(): Promise<Worker | BarcodeDetector>;
+    static createQrEngine(): Worker;
     /** @deprecated */
-    static createQrEngine(workerPath: string): Promise<Worker | BarcodeDetector>;
+    static createQrEngine(workerPath: string): Worker;
     private _onPlay;
     private _onLoadedMetaData;
     private _onVisibilityChange;

@@ -3,28 +3,35 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 // ts config is a combination of tsconfig.json and overrides here. Type declarations file is generated separately via
 // tsc (see build script in package.json), because rollup can not emit multiple files if using output.file option.
 import typescript from '@rollup/plugin-typescript';
+import wasm, { emscripten } from '@rollup/plugin-wasm';
 
+// note: i removed this because it doesn't play nice with wasm, plus we want to
+// use jsQR always
 // not using rollup's output.banner/output.intro/output.footer/output.outro as we also have to modify the generated code
-function workerScriptToDynamicImport() {
-    return {
-        name: 'worker-script-to-dynamic-import',
-        generateBundle(options, bundle) {
-            for (const chunkName of Object.keys(bundle)) {
-                const chunk = bundle[chunkName];
-                if (chunk.type !== 'chunk') {
-                    continue;
-                }
-                chunk.code = 'export const createWorker=()=>new Worker(URL.createObjectURL(new Blob([`'
-                    + chunk.code.replace(/`/g, '\\`').replace(/\${/g, '\\${')
-                    + '`]),{type:"application/javascript"}))';
-            }
-        },
-    };
-}
+// function workerScriptToDynamicImport() {
+//     return {
+//         name: 'worker-script-to-dynamic-import',
+//         generateBundle(options, bundle) {
+//             for (const chunkName of Object.keys(bundle)) {
+//                 const chunk = bundle[chunkName];
+//                 if (chunk.type !== 'chunk') {
+//                     continue;
+//                 }
+//                 // chunk.code = 'export const createWorker=()=>new Worker(URL.createObjectURL(new Blob([`'
+//                 //     + chunk.code.replace(/`/g, '\\`').replace(/\${/g, '\\${')
+//                 //     + '`]),{type:"application/javascript"}), {type: "module"})';
+//                 chunk.code = 'export const createWorker=()=>new Worker(URL.createObjectURL(new Blob(['
+//                 + JSON.stringify(chunk.code)
+//                 + '],{type:"application/javascript"})), {type: "module"})';
+//             }
+//         },
+//     };
+// }
 
 export default () => [
     // worker; built first to be available for inlining in the legacy build
     {
+        external: ['jsqr-es6'],
         input: 'src/worker.ts',
         output: {
             file: 'qr-scanner-worker.min.js',
@@ -35,14 +42,14 @@ export default () => [
         plugins: [
             typescript(),
             sourcemaps(),
+            wasm({...emscripten, targetEnv: "auto", fileName: "[name][extname]"}),
             // closureCompiler({
-                //compilation_level: 'ADVANCED',
-                //warning_level: 'QUIET',
+            //     compilation_level: 'ADVANCED',
+            //     warning_level: 'QUIET',
             //     language_in: 'ECMASCRIPT6',
             //     language_out: 'ECMASCRIPT6',
             //     rewrite_polyfills: false,
             // }),
-            workerScriptToDynamicImport(),
         ]
     },
     ...([

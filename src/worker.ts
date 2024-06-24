@@ -1,5 +1,9 @@
-// @ts-ignore jsqr-es6 does not provide types currently
-import jsQR from '../node_modules/jsqr-es6/dist/jsQR.js';
+import jsQR from 'jsqr-es6';
+import { initDecoder, getDecoderInitialized } from 'jsqr-es6/dist/decoder/reedsolomon'
+
+if (!getDecoderInitialized()) {
+  await initDecoder();
+}
 
 type GrayscaleWeights = {
     red: number,
