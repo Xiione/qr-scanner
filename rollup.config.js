@@ -3,7 +3,6 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 // ts config is a combination of tsconfig.json and overrides here. Type declarations file is generated separately via
 // tsc (see build script in package.json), because rollup can not emit multiple files if using output.file option.
 import typescript from '@rollup/plugin-typescript';
-import closureCompiler from '@ampproject/rollup-plugin-closure-compiler';
 
 // not using rollup's output.banner/output.intro/output.footer/output.outro as we also have to modify the generated code
 function workerScriptToDynamicImport() {
@@ -36,13 +35,13 @@ export default () => [
         plugins: [
             typescript(),
             sourcemaps(),
-            closureCompiler({
+            // closureCompiler({
                 //compilation_level: 'ADVANCED',
                 //warning_level: 'QUIET',
-                language_in: 'ECMASCRIPT6',
-                language_out: 'ECMASCRIPT6',
-                rewrite_polyfills: false,
-            }),
+            //     language_in: 'ECMASCRIPT6',
+            //     language_out: 'ECMASCRIPT6',
+            //     rewrite_polyfills: false,
+            // }),
             workerScriptToDynamicImport(),
         ]
     },
@@ -94,11 +93,11 @@ export default () => [
             typescript({
                 target: 'ES2017',
             }),
-            closureCompiler({
-                language_in: 'ECMASCRIPT_2017',
-                language_out: specificSettings.language_out,
-                rewrite_polyfills: false,
-            })
+            // closureCompiler({
+            //     language_in: 'ECMASCRIPT_2017',
+            //     language_out: specificSettings.language_out,
+            //     rewrite_polyfills: false,
+            // })
         ],
     }))),
 ];

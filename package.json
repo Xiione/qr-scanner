@@ -45,12 +45,10 @@
     "@types/offscreencanvas": "^2019.6.4"
   },
   "devDependencies": {
-    "@ampproject/rollup-plugin-closure-compiler": "^0.27.0",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-typescript": "^8.3.0",
     "acorn": "^8.7.0",
-    "google-closure-compiler": "^20220104.0.0",
-    "jsqr-es6": "^1.4.0-1",
+    "jsqr-es6": "Xiione/jsQR",
     "rollup": "^2.21.0",
     "rollup-plugin-sourcemaps": "^0.6.2",
     "tslib": "^2.3.1",
