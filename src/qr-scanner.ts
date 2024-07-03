@@ -521,10 +521,22 @@ class QrScanner {
                     qrEngine!.removeEventListener('error', onError);
                     clearTimeout(timeout);
                     if (event.data.data !== null) {
-                        resolve({
+                        const res: QrScanner.ScanResult = {
                             data: event.data.data,
+                            cornerPointsOrig: event.data.cornerPoints,
                             cornerPoints: QrScanner._convertPoints(event.data.cornerPoints, scanRegion),
-                        });
+                        };
+                        if (imageOrFileOrBlobOrUrl instanceof HTMLVideoElement) {
+                            canvas!.toBlob((blob) => {
+                                if (blob) {
+                                    resolve({...res, scannedFrame: blob})
+                                } else {
+                                    resolve(res);
+                                }
+                            })
+                        } else {
+                            resolve(res);
+                        }
                     } else {
                         reject(QrScanner.NO_QR_CODE_FOUND);
                     }
@@ -711,6 +723,8 @@ class QrScanner {
         scanRegion?: QrScanner.ScanRegion | null,
     ): QrScanner.Point[] {
         if (!scanRegion) return points;
+        // create a new array so we don't mangle the original array's Points
+        let converted: QrScanner.Point[] = [];
         const offsetX = scanRegion.x || 0;
         const offsetY = scanRegion.y || 0;
         const scaleFactorX = scanRegion.width && scanRegion.downScaledWidth
@@ -720,10 +734,12 @@ class QrScanner {
             ? scanRegion.height / scanRegion.downScaledHeight
             : 1;
         for (const point of points) {
-            point.x = point.x * scaleFactorX + offsetX;
-            point.y = point.y * scaleFactorY + offsetY;
+            converted = [...converted, {
+                x: point.x * scaleFactorX + offsetX,
+                y: point.y * scaleFactorY + offsetY,
+            }]
         }
-        return points;
+        return converted;
     }
 
     private _scanFrame(): void {
@@ -1030,6 +1046,8 @@ declare namespace QrScanner {
         data: string;
         // In clockwise order, starting at top left, but this might not be guaranteed in the future.
         cornerPoints: QrScanner.Point[];
+        cornerPointsOrig: QrScanner.Point[];
+        scannedFrame?: Blob;
     }
 }
 

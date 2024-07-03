@@ -12,7 +12,7 @@ type GrayscaleWeights = {
     useIntegerApproximation: boolean,
 };
 
-let inversionAttempts: 'dontInvert' | 'onlyInvert' | 'attemptBoth' = 'dontInvert';
+let inversionAttempts: 'dontInvert' | 'onlyInvert' | 'attemptBoth' = 'attemptBoth';
 let grayscaleWeights: GrayscaleWeights = {
     // weights for quick luma integer approximation (https://en.wikipedia.org/wiki/YUV#Full_swing_for_BT.601)
     red: 77,

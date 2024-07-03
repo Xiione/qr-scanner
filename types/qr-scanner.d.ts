@@ -109,6 +109,8 @@ declare namespace QrScanner {
     interface ScanResult {
         data: string;
         cornerPoints: QrScanner.Point[];
+        cornerPointsOrig: QrScanner.Point[];
+        scannedFrame?: Blob;
     }
 }
 declare class BarcodeDetector {
