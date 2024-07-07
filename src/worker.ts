@@ -1,10 +1,6 @@
 import jsQR from 'jsqr-es6';
 import { initDecoder, getDecoderInitialized } from 'jsqr-es6/dist/decoder/reedsolomon'
 
-if (!getDecoderInitialized()) {
-  await initDecoder();
-}
-
 type GrayscaleWeights = {
     red: number,
     green: number,
@@ -12,8 +8,8 @@ type GrayscaleWeights = {
     useIntegerApproximation: boolean,
 };
 
-let inversionAttempts: 'dontInvert' | 'onlyInvert' | 'attemptBoth' = 'attemptBoth';
-let grayscaleWeights: GrayscaleWeights = {
+export let inversionAttempts: 'dontInvert' | 'onlyInvert' | 'attemptBoth' = 'attemptBoth';
+export let grayscaleWeights: GrayscaleWeights = {
     // weights for quick luma integer approximation (https://en.wikipedia.org/wiki/YUV#Full_swing_for_BT.601)
     red: 77,
     green: 150,
@@ -21,13 +17,16 @@ let grayscaleWeights: GrayscaleWeights = {
     useIntegerApproximation: true,
 };
 
-self.onmessage = event => {
+self.onmessage = async event => {
     const id = event['data']['id'];
     const type = event['data']['type'];
     const data = event['data']['data'];
 
     switch (type) {
         case 'decode':
+            if (!getDecoderInitialized()) {
+              await initDecoder();
+            }
             decode(data, id);
             break;
         case 'grayscaleWeights':

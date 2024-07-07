@@ -1,3 +1,10 @@
+import jsQR from 'jsqr-es6';
+import { initDecoder, getDecoderInitialized } from 'jsqr-es6/dist/decoder/reedsolomon'
+import {
+  inversionAttempts as inversionAttemptsDefault,
+  grayscaleWeights as grayscaleWeightsDefault
+} from './worker';
+
 class QrScanner {
     static readonly DEFAULT_CANVAS_SIZE = 400;
     static readonly NO_QR_CODE_FOUND = 'No QR code found';
@@ -503,62 +510,89 @@ class QrScanner {
             [canvas, canvasContext] = QrScanner._drawToCanvas(image, scanRegion, canvas, disallowCanvasResizing);
             let detailedScanResult: QrScanner.ScanResult;
 
-            // const qrEngine = qrEngine; // for ts to know that it's still a worker later in the event listeners
-            if (!gotExternalEngine) {
+            // we turn this on by default
+            // if (!gotExternalEngine) {
                 // Enable scanning of inverted color qr codes.
-                QrScanner._postWorkerMessageSync(qrEngine, 'inversionMode', 'both');
-            }
-            detailedScanResult = await new Promise((resolve, reject) => {
-                let timeout: number;
-                let onMessage: (event: MessageEvent) => void;
-                let onError: (error: ErrorEvent | string) => void;
-                let expectedResponseId = -1;
-                onMessage = (event: MessageEvent) => {
-                    if (event.data.id !== expectedResponseId) {
-                        return;
-                    }
-                    qrEngine!.removeEventListener('message', onMessage);
-                    qrEngine!.removeEventListener('error', onError);
-                    clearTimeout(timeout);
-                    if (event.data.data !== null) {
-                        const res: QrScanner.ScanResult = {
-                            data: event.data.data,
-                            cornerPointsOrig: event.data.cornerPoints,
-                            cornerPoints: QrScanner._convertPoints(event.data.cornerPoints, scanRegion),
-                        };
-                        if (imageOrFileOrBlobOrUrl instanceof HTMLVideoElement) {
-                            canvas!.toBlob((blob) => {
-                                if (blob) {
-                                    resolve({...res, scannedFrame: blob})
-                                } else {
-                                    resolve(res);
-                                }
-                            })
-                        } else {
-                            resolve(res);
+                // QrScanner._postWorkerMessageSync(qrEngine, 'inversionMode', 'both');
+            // }
+            if (qrEngine) {
+                detailedScanResult = await new Promise((resolve, reject) => {
+                    let timeout: number;
+                    let onMessage: (event: MessageEvent) => void;
+                    let onError: (error: ErrorEvent | string) => void;
+                    let expectedResponseId = -1;
+                    onMessage = (event: MessageEvent) => {
+                        if (event.data.id !== expectedResponseId) {
+                            return;
                         }
-                    } else {
-                        reject(QrScanner.NO_QR_CODE_FOUND);
-                    }
-                };
-                onError = (error: ErrorEvent | string) => {
-                    qrEngine!.removeEventListener('message', onMessage);
-                    qrEngine!.removeEventListener('error', onError);
-                    clearTimeout(timeout);
-                    const errorMessage = !error ? 'Unknown Error' : ((error as ErrorEvent).message || error);
-                    reject('Scanner error: ' + errorMessage);
-                };
-                qrEngine!.addEventListener('message', onMessage);
-                qrEngine!.addEventListener('error', onError);
-                timeout = setTimeout(() => onError('timeout'), 10000);
-                const imageData = canvasContext.getImageData(0, 0, canvas!.width, canvas!.height);
-                expectedResponseId = QrScanner._postWorkerMessageSync(
-                    qrEngine!,
-                    'decode',
-                    imageData,
-                    [imageData.data.buffer],
-                );
-              });
+                        qrEngine!.removeEventListener('message', onMessage);
+                        qrEngine!.removeEventListener('error', onError);
+                        clearTimeout(timeout);
+                        if (event.data.data !== null) {
+                            const res: QrScanner.ScanResult = {
+                                data: event.data.data,
+                                cornerPointsOrig: event.data.cornerPoints,
+                                cornerPoints: QrScanner._convertPoints(event.data.cornerPoints, scanRegion),
+                            };
+                            if (imageOrFileOrBlobOrUrl instanceof HTMLVideoElement) {
+                                canvas!.toBlob((blob) => {
+                                    if (blob) {
+                                        resolve({...res, scannedFrame: blob})
+                                    } else {
+                                        resolve(res);
+                                    }
+                                })
+                            } else {
+                                resolve(res);
+                            }
+                        } else {
+                            reject(QrScanner.NO_QR_CODE_FOUND);
+                        }
+                    };
+                    onError = (error: ErrorEvent | string) => {
+                        qrEngine!.removeEventListener('message', onMessage);
+                        qrEngine!.removeEventListener('error', onError);
+                        clearTimeout(timeout);
+                        const errorMessage = !error ? 'Unknown Error' : ((error as ErrorEvent).message || error);
+                        reject('Scanner error: ' + errorMessage);
+                    };
+                    qrEngine!.addEventListener('message', onMessage);
+                    qrEngine!.addEventListener('error', onError);
+                    timeout = setTimeout(() => onError('timeout'), 10000);
+                    const imageData = canvasContext.getImageData(0, 0, canvas!.width, canvas!.height);
+                    expectedResponseId = QrScanner._postWorkerMessageSync(
+                        qrEngine!,
+                        'decode',
+                        imageData,
+                        [imageData.data.buffer],
+                    );
+                  });
+            } else {
+                // do it without worker
+                if (!getDecoderInitialized()) {
+                    await initDecoder();
+                }
+                const data = canvasContext.getImageData(0, 0, canvas!.width, canvas!.height);
+                const res = jsQR(data.data, data.width, data.height, {
+                  inversionAttempts: inversionAttemptsDefault,
+                  greyScaleWeights: grayscaleWeightsDefault,
+                });
+                if (!res) {
+                    throw 'Scanner error: ' + QrScanner.NO_QR_CODE_FOUND;
+                } else {
+                    const cornerPoints = [
+                        res.location.topLeftCorner,
+                        res.location.topRightCorner,
+                        res.location.bottomRightCorner,
+                        res.location.bottomLeftCorner,
+                    ];
+                    detailedScanResult = {
+                        data: res.data,
+                        cornerPoints: QrScanner._convertPoints(cornerPoints, scanRegion),
+                        cornerPointsOrig: cornerPoints
+                    };
+                }
+            }
             return returnDetailedScanResult ? detailedScanResult : detailedScanResult.data;
         } catch (e) {
             if (!scanRegion || !alsoTryWithoutScanRegion) throw e;
@@ -567,12 +601,13 @@ class QrScanner {
                 { qrEngine, canvas, disallowCanvasResizing },
             );
             return returnDetailedScanResult ? detailedScanResult : detailedScanResult.data;
-        } finally {
-            if (!gotExternalEngine) {
-                console.log("not got external engine: ", qrEngine)
-                QrScanner._postWorkerMessage(qrEngine!, 'close');
-            }
         }
+        // we won't use a temporarily created engine anyways
+        // finally {
+        //     if (!gotExternalEngine) {
+        //         QrScanner._postWorkerMessage(qrEngine!, 'close');
+        //     }
+        // }
     }
 
     setGrayscaleWeights(red: number, green: number, blue: number, useIntegerApproximation: boolean = true): void {

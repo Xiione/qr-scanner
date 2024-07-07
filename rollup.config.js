@@ -30,12 +30,12 @@ import typescript from '@rollup/plugin-typescript';
 export default () => [
     // worker; built first to be available for inlining in the legacy build
     {
-        external: ['jsqr-es6'],
+        external: ['jsqr-es6', 'jsqr-es6/dist/decoder/reedsolomon'],
         input: 'src/worker.ts',
         output: {
             file: 'qr-scanner-worker.min.js',
             format: 'esm',
-            interop: false,
+            interop: 'auto',
             sourcemap: true,
         },
         plugins: [
@@ -56,7 +56,7 @@ export default () => [
             // Note that this results in the dynamic import of the worker to also be a dynamic import in the umd build.
             // However, umd builds do not support multiple chunks, so that's probably the best we can do, as js dynamic
             // imports are now widely supported anyways.
-            external: ['./qr-scanner-worker.min.js'],
+            external: ['./qr-scanner-worker.min.js', 'jsqr-es6', 'jsqr-es6/dist/decoder/reedsolomon'],
             output: [{
                 file: 'qr-scanner.min.js',
                 format: 'esm',
@@ -69,6 +69,7 @@ export default () => [
         },
         // legacy build specific settings
         {
+            external: ['./qr-scanner-worker.min.js', 'jsqr-es6', 'jsqr-es6/dist/decoder/reedsolomon'],
             aliases: {
                 // redirect to the built version in the dist folder
                 './qr-scanner-worker.min.js': '../qr-scanner-worker.min.js',
@@ -87,7 +88,7 @@ export default () => [
         input: 'src/qr-scanner.ts',
         external: specificSettings.external,
         output: specificSettings.output.map((output) => ({
-            interop: false,
+            interop: 'auto',
             sourcemap: true,
             ...output,
         })),
