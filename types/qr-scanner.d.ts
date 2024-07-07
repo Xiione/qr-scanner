@@ -95,13 +95,13 @@ declare namespace QrScanner {
         downScaledWidth?: number;
         downScaledHeight?: number;
     }
-    type FacingMode = 'environment' | 'user';
+    type FacingMode = "environment" | "user";
     type DeviceId = string;
     interface Camera {
         id: DeviceId;
         label: string;
     }
-    type InversionMode = 'original' | 'invert' | 'both';
+    type InversionMode = "original" | "invert" | "both";
     interface Point {
         x: number;
         y: number;

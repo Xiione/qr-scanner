@@ -4,7 +4,6 @@
   "description": "A javascript QR scanner library",
   "main": "qr-scanner.umd.min.js",
   "module": "qr-scanner.min.js",
-  "type": "module",
   "types": "types/qr-scanner.d.ts",
   "files": [
     "LICENSE",
