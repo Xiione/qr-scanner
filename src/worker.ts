@@ -3,6 +3,7 @@ import {
   initDecoder,
   getDecoderInitialized,
 } from "jsqr-es6/dist/decoder/reedsolomon";
+import { WorkerResult } from "./WorkerResult";
 
 type GreyScaleWeights = {
   red: number;
@@ -62,22 +63,31 @@ function decode(
       id: requestId,
       type: "qrResult",
       data: null,
-    });
+    } as WorkerResult);
     return;
   }
 
-  (self as unknown as Worker).postMessage({
-    id: requestId,
-    type: "qrResult",
-    data: result.data,
-    // equivalent to cornerPoints of native BarcodeDetector
-    cornerPoints: [
-      result.location.topLeftCorner,
-      result.location.topRightCorner,
-      result.location.bottomRightCorner,
-      result.location.bottomLeftCorner,
-    ],
-  });
+  (self as unknown as Worker).postMessage(
+    {
+      id: requestId,
+      type: "qrResult",
+      data: result.data,
+      // equivalent to cornerPoints of native BarcodeDetector
+      cornerPoints: [
+        result.location.topLeftCorner,
+        result.location.topRightCorner,
+        result.location.bottomRightCorner,
+        result.location.bottomLeftCorner,
+      ],
+      version: result.version,
+      matrixData: result.matrix.data,
+      matrixWidth: result.matrix.width,
+      matrixDataCorrected: result.matrixCorrected.data,
+      ecLevel: result.ecLevel,
+      dataMask: result.dataMask,
+    } as WorkerResult,
+    [result.matrix.data.buffer, result.matrixCorrected.data.buffer],
+  );
 }
 
 function setGrayscaleWeights(data: GreyScaleWeights) {

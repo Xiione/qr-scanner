@@ -1,8 +1,10 @@
 import jsQR from "jsqr-es6";
+import { BitMatrix } from "jsqr-es6/dist/BitMatrix";
 import {
   initDecoder,
   getDecoderInitialized,
 } from "jsqr-es6/dist/decoder/reedsolomon";
+import { WorkerResult } from "./WorkerResult";
 
 // copied from worker.ts cuz they don't mix well
 type GreyScaleWeights = {
@@ -623,8 +625,6 @@ class QrScanner {
       );
     }
 
-    const gotExternalEngine = !!qrEngine;
-
     try {
       let image:
         | HTMLImageElement
@@ -634,10 +634,6 @@ class QrScanner {
         | ImageBitmap
         | SVGImageElement;
       let canvasContext: CanvasRenderingContext2D;
-
-      if (!qrEngine) {
-        qrEngine = QrScanner.createQrEngine();
-      }
 
       image = await QrScanner._loadImage(imageOrFileOrBlobOrUrl);
       [canvas, canvasContext] = QrScanner._drawToCanvas(
@@ -667,14 +663,29 @@ class QrScanner {
             qrEngine!.removeEventListener("error", onError);
             clearTimeout(timeout);
             if (event.data.data !== null) {
+              const data = event.data as WorkerResult;
               const res: QrScanner.ScanResult = {
-                data: event.data.data,
-                cornerPointsOrig: event.data.cornerPoints,
+                data: data.data!,
+                cornerPointsOrig: data.cornerPoints!,
                 cornerPoints: QrScanner._convertPoints(
-                  event.data.cornerPoints,
+                  data.cornerPoints!,
                   scanRegion,
                 ),
+                version: data.version!,
+                matrix: BitMatrix.createFromPacked(
+                  data.matrixData!,
+                  data.matrixWidth!,
+                  data.matrixWidth!,
+                ),
+                matrixCorrected: BitMatrix.createFromPacked(
+                  data.matrixDataCorrected!,
+                  data.matrixWidth!,
+                  data.matrixWidth!,
+                ),
+                ecLevel: data.ecLevel!,
+                dataMask: data.dataMask!,
               };
+
               if (imageOrFileOrBlobOrUrl instanceof HTMLVideoElement) {
                 canvas!.toBlob((blob) => {
                   if (blob) {
@@ -743,7 +754,12 @@ class QrScanner {
             data: res.data,
             cornerPoints: QrScanner._convertPoints(cornerPoints, scanRegion),
             cornerPointsOrig: cornerPoints,
-          };
+            version: res.version,
+            matrix: res.matrix,
+            matrixCorrected: res.matrixCorrected,
+            ecLevel: res.ecLevel,
+            dataMask: res.dataMask,
+          } as QrScanner.ScanResult;
         }
       }
       return returnDetailedScanResult
@@ -1348,6 +1364,11 @@ declare namespace QrScanner {
     cornerPoints: QrScanner.Point[];
     cornerPointsOrig: QrScanner.Point[];
     scannedFrame?: Blob;
+    version: number;
+    matrix: BitMatrix;
+    matrixCorrected: BitMatrix;
+    ecLevel: number;
+    dataMask: number;
   }
 }
 

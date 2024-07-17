@@ -1,3 +1,4 @@
+import { BitMatrix } from "jsqr-es6/dist/BitMatrix";
 declare class QrScanner {
     static readonly DEFAULT_CANVAS_SIZE = 400;
     static readonly NO_QR_CODE_FOUND = "No QR code found";
@@ -111,6 +112,11 @@ declare namespace QrScanner {
         cornerPoints: QrScanner.Point[];
         cornerPointsOrig: QrScanner.Point[];
         scannedFrame?: Blob;
+        version: number;
+        matrix: BitMatrix;
+        matrixCorrected: BitMatrix;
+        ecLevel: number;
+        dataMask: number;
     }
 }
 declare class BarcodeDetector {
