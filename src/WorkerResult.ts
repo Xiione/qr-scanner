@@ -1,3 +1,5 @@
+import { Chunks } from "jsqr-es6/dist/decoder/decodeData";
+import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream";
 import { Point } from "jsqr-es6/dist/locator";
 
 export interface WorkerResult {
@@ -11,4 +13,6 @@ export interface WorkerResult {
   matrixDataCorrected?: Uint8ClampedArray;
   ecLevel?: number;
   dataMask?: number;
+  chunks?: Chunks;
+  streamMappings?: Map<number, StreamInfo>;
 }

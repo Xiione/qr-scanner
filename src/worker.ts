@@ -85,6 +85,8 @@ function decode(
       matrixDataCorrected: result.matrixCorrected.data,
       ecLevel: result.ecLevel,
       dataMask: result.dataMask,
+      chunks: result.chunks,
+      streamMappings: result.streamMappings,
     } as WorkerResult,
     [result.matrix.data.buffer, result.matrixCorrected.data.buffer],
   );

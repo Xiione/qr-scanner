@@ -1,4 +1,6 @@
 import { BitMatrix } from "jsqr-es6/dist/BitMatrix";
+import { Chunks } from "jsqr-es6/dist/decoder/decodeData";
+import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream";
 declare class QrScanner {
     static readonly DEFAULT_CANVAS_SIZE = 400;
     static readonly NO_QR_CODE_FOUND = "No QR code found";
@@ -117,6 +119,8 @@ declare namespace QrScanner {
         matrixCorrected: BitMatrix;
         ecLevel: number;
         dataMask: number;
+        chunks: Chunks;
+        streamMappings: Map<number, StreamInfo>;
     }
 }
 declare class BarcodeDetector {

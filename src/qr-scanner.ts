@@ -4,7 +4,9 @@ import {
   initDecoder,
   getDecoderInitialized,
 } from "jsqr-es6/dist/decoder/reedsolomon";
+import { Chunks } from "jsqr-es6/dist/decoder/decodeData";
 import { WorkerResult } from "./WorkerResult";
+import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream";
 
 // copied from worker.ts cuz they don't mix well
 type GreyScaleWeights = {
@@ -684,6 +686,8 @@ class QrScanner {
                 ),
                 ecLevel: data.ecLevel!,
                 dataMask: data.dataMask!,
+                chunks: data.chunks!,
+                streamMappings: data.streamMappings!,
               };
 
               if (imageOrFileOrBlobOrUrl instanceof HTMLVideoElement) {
@@ -759,7 +763,9 @@ class QrScanner {
             matrixCorrected: res.matrixCorrected,
             ecLevel: res.ecLevel,
             dataMask: res.dataMask,
-          } as QrScanner.ScanResult;
+            chunks: res.chunks,
+            streamMappings: res.streamMappings,
+          };
         }
       }
       return returnDetailedScanResult
@@ -1369,6 +1375,8 @@ declare namespace QrScanner {
     matrixCorrected: BitMatrix;
     ecLevel: number;
     dataMask: number;
+    chunks: Chunks;
+    streamMappings: Map<number, StreamInfo>;
   }
 }
 
