@@ -1,6 +1,6 @@
-import { BitMatrix } from "jsqr-es6/dist/BitMatrix";
-import { Chunks } from "jsqr-es6/dist/decoder/decodeData";
-import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream";
+import { BitMatrix } from "jsqr-es6/dist/BitMatrix.js";
+import { Chunks } from "jsqr-es6/dist/decoder/decodeData/index.js";
+import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream.js";
 declare class QrScanner {
     static readonly DEFAULT_CANVAS_SIZE = 400;
     static readonly NO_QR_CODE_FOUND = "No QR code found";

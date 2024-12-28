@@ -2,7 +2,7 @@ import jsQR from "jsqr-es6";
 import {
   initDecoder,
   getDecoderInitialized,
-} from "jsqr-es6/dist/decoder/reedsolomon";
+} from "jsqr-es6/dist/decoder/reedsolomon/index.js";
 import { WorkerResult } from "./WorkerResult";
 
 type GreyScaleWeights = {

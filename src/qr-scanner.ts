@@ -1,12 +1,12 @@
 import jsQR from "jsqr-es6";
-import { BitMatrix } from "jsqr-es6/dist/BitMatrix";
+import { BitMatrix } from "jsqr-es6/dist/BitMatrix.js";
 import {
   initDecoder,
   getDecoderInitialized,
-} from "jsqr-es6/dist/decoder/reedsolomon";
-import { Chunks } from "jsqr-es6/dist/decoder/decodeData";
+} from "jsqr-es6/dist/decoder/reedsolomon/index.js";
+import { Chunks } from "jsqr-es6/dist/decoder/decodeData/index.js";
 import { WorkerResult } from "./WorkerResult";
-import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream";
+import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream.js";
 
 // copied from worker.ts cuz they don't mix well
 type GreyScaleWeights = {
