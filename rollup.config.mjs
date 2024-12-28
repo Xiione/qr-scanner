@@ -66,11 +66,11 @@ export default () => [
           file: "qr-scanner.min.js",
           format: "esm",
         },
-        {
-          file: "qr-scanner.umd.min.js",
-          format: "umd",
-          name: "QrScanner",
-        },
+        // {
+        //   file: "qr-scanner.umd.min.js",
+        //   format: "umd",
+        //   name: "QrScanner",
+        // },
       ],
       language_out: "ECMASCRIPT_2017",
     },
@@ -88,7 +88,6 @@ export default () => [
       output: [
         {
           file: "qr-scanner.legacy.min.js",
-          // only providing a umd build and no esm build, as support for es modules is lower than es6 generally
           format: "umd",
           name: "QrScanner",
           // inline the worker as older browsers that already supported es6 did not support dynamic imports yet
