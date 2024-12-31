@@ -1,5 +1,9 @@
 import jsQR from "jsqr-es6";
+import { initWASM } from "jsqr-es6/decoder/reedsolomon";
 import { type WorkerResult } from "./WorkerResult.js";
+
+let decoderReady = false;
+initWASM().then(() => (decoderReady = true));
 
 type GreyScaleWeights = {
   red: number;
@@ -47,10 +51,16 @@ function decode(
   const rgbaData = data["data"];
   const width = data["width"];
   const height = data["height"];
-  const result = jsQR(rgbaData, width, height, {
-    inversionAttempts: inversionAttempts,
-    greyScaleWeights: greyScaleWeights,
-  });
+
+  let result;
+
+  if (decoderReady) {
+    result = jsQR(rgbaData, width, height, {
+      inversionAttempts: inversionAttempts,
+      greyScaleWeights: greyScaleWeights,
+    });
+  }
+
   if (!result) {
     (self as unknown as Worker).postMessage({
       id: requestId,
