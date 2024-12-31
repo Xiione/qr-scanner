@@ -1,9 +1,5 @@
 import jsQR from "jsqr-es6";
-import {
-  initDecoder,
-  getDecoderInitialized,
-} from "jsqr-es6/dist/decoder/reedsolomon/index.js";
-import { WorkerResult } from "./WorkerResult";
+import { type WorkerResult } from "./WorkerResult.js";
 
 type GreyScaleWeights = {
   red: number;
@@ -29,9 +25,6 @@ self.onmessage = async (event) => {
 
   switch (type) {
     case "decode":
-      if (!getDecoderInitialized()) {
-        await initDecoder();
-      }
       decode(data, id);
       break;
     case "grayscaleWeights":

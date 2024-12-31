@@ -27,10 +27,21 @@ import typescript from "@rollup/plugin-typescript";
 //     };
 // }
 
+const jsqr_ext = [
+  "jsqr-es6",
+  "jsqr-es6/BitMatrix",
+  "jsqr-es6/locator",
+  "jsqr-es6/decoder",
+  "jsqr-es6/decoder/version",
+  "jsqr-es6/decoder/decodeData",
+  "jsqr-es6/decoder/decodeData/BitStream",
+  "jsqr-es6/decoder/reedsolomon",
+];
+
 export default () => [
   // worker; built first to be available for inlining in the legacy build
   {
-    external: ["jsqr-es6", "jsqr-es6/dist/decoder/reedsolomon"],
+    external: [...jsqr_ext],
     input: "src/worker.ts",
     output: {
       file: "qr-scanner-worker.min.js",
@@ -56,11 +67,7 @@ export default () => [
       // Note that this results in the dynamic import of the worker to also be a dynamic import in the umd build.
       // However, umd builds do not support multiple chunks, so that's probably the best we can do, as js dynamic
       // imports are now widely supported anyways.
-      external: [
-        "./qr-scanner-worker.min.js",
-        "jsqr-es6",
-        "jsqr-es6/dist/decoder/reedsolomon",
-      ],
+      external: ["./qr-scanner-worker.min.js", ...jsqr_ext],
       output: [
         {
           file: "qr-scanner.min.js",
@@ -76,13 +83,8 @@ export default () => [
     },
     // legacy build specific settings
     {
-      external: [
-        "./qr-scanner-worker.min.js",
-        "jsqr-es6",
-        "jsqr-es6/dist/decoder/reedsolomon",
-      ],
+      external: ["./qr-scanner-worker.min.js", ...jsqr_ext],
       aliases: {
-        // redirect to the built version in the dist folder
         "./qr-scanner-worker.min.js": "../qr-scanner-worker.min.js",
       },
       output: [
@@ -108,9 +110,7 @@ export default () => [
       alias({
         entries: specificSettings.aliases,
       }),
-      typescript({
-        target: "ES2017",
-      }),
+      typescript(),
       // closureCompiler({
       //     language_in: 'ECMASCRIPT_2017',
       //     language_out: specificSettings.language_out,

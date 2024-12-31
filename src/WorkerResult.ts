@@ -1,6 +1,6 @@
-import { Chunks } from "jsqr-es6/dist/decoder/decodeData";
-import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream";
-import { Point } from "jsqr-es6/dist/locator";
+import { type Chunks } from "jsqr-es6/decoder/decodeData";
+import { type StreamInfo } from "jsqr-es6/decoder/decodeData/BitStream";
+import { type Point } from "jsqr-es6/locator";
 
 export interface WorkerResult {
   id: number;

@@ -1,12 +1,8 @@
 import jsQR from "jsqr-es6";
-import { BitMatrix } from "jsqr-es6/dist/BitMatrix.js";
-import {
-  initDecoder,
-  getDecoderInitialized,
-} from "jsqr-es6/dist/decoder/reedsolomon/index.js";
-import { Chunks } from "jsqr-es6/dist/decoder/decodeData/index.js";
-import { WorkerResult } from "./WorkerResult";
-import { StreamInfo } from "jsqr-es6/dist/decoder/decodeData/BitStream.js";
+import { BitMatrix } from "jsqr-es6/BitMatrix";
+import { type Chunks } from "jsqr-es6/decoder/decodeData";
+import { type WorkerResult } from "./WorkerResult.js";
+import { type StreamInfo } from "jsqr-es6/decoder/decodeData/BitStream";
 
 // copied from worker.ts cuz they don't mix well
 type GreyScaleWeights = {
@@ -732,9 +728,6 @@ class QrScanner {
         });
       } else {
         // do it without worker
-        if (!getDecoderInitialized()) {
-          await initDecoder();
-        }
         const data = canvasContext.getImageData(
           0,
           0,
