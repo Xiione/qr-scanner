@@ -43,7 +43,7 @@
   "homepage": "https://github.com/nimiq/qr-scanner#readme",
   "dependencies": {
     "@types/offscreencanvas": "^2019.7.3",
-    "jsqr-es6": "github:Xiione/jsQR#7d83a819a514"
+    "jsqr-es6": "github:Xiione/jsQR#855bfe6fb888"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^5.1.0",
