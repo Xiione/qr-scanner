@@ -5,6 +5,9 @@
   "type": "module",
   "module": "qr-scanner.min.js",
   "types": "types/qr-scanner.d.ts",
+  "exports": {
+    ".": "./qr-scanner.min.js"
+  },
   "files": [
     "LICENSE",
     "qr-scanner.min.js",
