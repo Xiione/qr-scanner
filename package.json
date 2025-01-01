@@ -3,24 +3,25 @@
   "version": "1.4.2",
   "description": "A javascript QR scanner library",
   "type": "module",
-  "module": "qr-scanner.min.js",
+  "module": "qr-scanner.js",
   "types": "types/qr-scanner.d.ts",
   "exports": {
-    ".": "./qr-scanner.min.js"
+    ".": "./qr-scanner.js"
   },
   "files": [
     "LICENSE",
-    "qr-scanner.min.js",
-    "qr-scanner.min.js.map",
-    "qr-scanner.legacy.min.js",
-    "qr-scanner.legacy.min.js.map",
-    "qr-scanner-worker.min.js",
-    "qr-scanner-worker.min.js.map",
-    "types/qr-scanner.d.ts"
+    "qr-scanner.js",
+    "qr-scanner.js.map",
+    "qr-scanner.legacy.js",
+    "qr-scanner.legacy.js.map",
+    "qr-scanner-worker.js",
+    "qr-scanner-worker.js.map",
+    "qr-scanner.d.ts",
+    "WorkerResult.d.ts"
   ],
   "scripts": {
     "prepare": "npm run build",
-    "build": "rollup --config && tsc src/qr-scanner.ts --target es2022 --module es2022 --moduleResolution bundler --declaration true --declarationDir types --emitDeclarationOnly"
+    "build": "rollup --config && tsc src/qr-scanner.ts --target es2022 --module es2022 --moduleResolution bundler --declaration true --declarationDir . --emitDeclarationOnly"
   },
   "repository": {
     "type": "git",

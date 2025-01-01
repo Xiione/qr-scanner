@@ -44,7 +44,7 @@ export default () => [
     external: [...jsqr_ext],
     input: "src/worker.ts",
     output: {
-      file: "qr-scanner-worker.min.js",
+      file: "qr-scanner-worker.js",
       format: "esm",
       interop: "auto",
       sourcemap: true,
@@ -67,29 +67,25 @@ export default () => [
       // Note that this results in the dynamic import of the worker to also be a dynamic import in the umd build.
       // However, umd builds do not support multiple chunks, so that's probably the best we can do, as js dynamic
       // imports are now widely supported anyways.
-      external: ["./qr-scanner-worker.min.js", ...jsqr_ext],
+      external: ["./qr-scanner-worker.js", ...jsqr_ext],
       output: [
         {
-          file: "qr-scanner.min.js",
+          file: "qr-scanner.js",
           format: "esm",
         },
-        // {
-        //   file: "qr-scanner.umd.min.js",
-        //   format: "umd",
-        //   name: "QrScanner",
         // },
       ],
       language_out: "ECMASCRIPT_2017",
     },
     // legacy build specific settings
     {
-      external: ["./qr-scanner-worker.min.js", ...jsqr_ext],
+      external: ["./qr-scanner-worker.js", ...jsqr_ext],
       aliases: {
-        "./qr-scanner-worker.min.js": "../qr-scanner-worker.min.js",
+        "./qr-scanner-worker.js": "../qr-scanner-worker.js",
       },
       output: [
         {
-          file: "qr-scanner.legacy.min.js",
+          file: "qr-scanner.legacy.js",
           format: "umd",
           name: "QrScanner",
           // inline the worker as older browsers that already supported es6 did not support dynamic imports yet

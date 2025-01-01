@@ -820,7 +820,7 @@ class QrScanner {
       );
     }
 
-    return new Worker(new URL("./qr-scanner-worker.min.js", import.meta.url), {
+    return new Worker(new URL("./qr-scanner-worker.js", import.meta.url), {
       type: "module",
     });
   }
