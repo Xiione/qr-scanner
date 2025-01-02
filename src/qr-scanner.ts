@@ -1,5 +1,4 @@
 import jsQR from "jsqr-es6";
-import { initWASM } from "jsqr-es6/decoder/reedsolomon";
 import { BitMatrix } from "jsqr-es6/BitMatrix";
 import { type Chunks } from "jsqr-es6/decoder/decodeData";
 import { type WorkerResult } from "./WorkerResult.js";
@@ -729,7 +728,6 @@ class QrScanner {
         });
       } else {
         // do it without worker
-        await initWASM();
         const data = canvasContext.getImageData(
           0,
           0,
