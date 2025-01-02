@@ -1,5 +1,8 @@
 import jsQR from "jsqr-es6";
 import type { WorkerResult } from "./WorkerResult";
+import { initWASM } from "jsqr-es6/decoder/reedsolomon";
+
+await initWASM();
 
 type GreyScaleWeights = {
   red: number;
