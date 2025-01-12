@@ -1,4 +1,7 @@
 # QR Scanner
+This fork is a heavily modified version of qr-scanner for integration with [qris.cool](https://qris.cool). My modifications are not documented in this README. Use at your own risk!!
+
+## Begin original README
 
 Javascript QR Code Scanner based on [Cosmo Wolfe's javascript port](https://github.com/cozmo/jsqr) of [Google's ZXing library](https://github.com/zxing/zxing).
 
